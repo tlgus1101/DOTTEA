@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="policeUser">
+   <select id="reportUserList" parameterType="hashmap"
+      resultType="hashmap">
+      <include refid="common.pagingPre" />
+   <![CDATA[
+   SELECT
+   ROW_NUMBER() OVER (ORDER BY P_USER_NO DESC) RNUM,
+   P_USER_NO,
+   RE_NO,
+   MEM_USER_NO,
+   P_USER_SUBJECT,
+   P_USER_CONTENT ,
+   P_USER_STATUS,
+   P_USER_GB,
+   TO_CHAR(P_USER_DATE, 'YYYY.MM.DD') AS P_USER_DATE,
+   P_REPORTER_ID 
+   FROM
+   POLICE_USER
+   WHERE
+   P_USER_GB ='N'
+   AND  ${searchType}  LIKE  #{keyword}
+   
+   ]]>
+      <include refid="common.pagingPost" />
+   </select>
+   
+   
+
+   <select id="reportBlUserList" parameterType="hashmap"
+      resultType="hashmap">
+      <include refid="common.pagingPre" />
+   <![CDATA[
+   select   
+   ROW_NUMBER() OVER (ORDER BY A.P_USER_NO DESC) RNUM,
+   A.P_USER_NO,
+   A.RE_NO,
+   A.MEM_USER_NO,
+   A.P_USER_SUBJECT,
+   A.P_USER_CONTENT,
+   A.P_USER_STATUS,
+   A.P_USER_GB,
+   TO_CHAR(A.P_USER_DATE, 'YYYY.MM.DD') AS P_USER_DATE,
+   A.P_REPORTER_ID 
+   FROM
+   POLICE_USER A, USER_BLACKLIST B
+   
+   where A.MEM_USER_NO = B.MEM_USER_NO
+  AND P_USER_GB ='N'
+   AND  ${searchType}  LIKE  #{keyword}
+   
+   ]]>
+      <include refid="common.pagingPost" />
+   </select> 
+   
+   
+   <select id="u_mView" parameterType="hashmap"
+      resultType="hashmap">
+   <![CDATA[
+   SELECT MEM_USER_USERID FROM MEMBER_USER WHERE MEM_USER_NO = #{MEM_USER_NO}
+   
+   ]]>
+   </select>
+   
+
+   <select id="reportUserView" parameterType="hashmap"
+      resultType="hashmap">
+   <![CDATA[
+   SELECT * FROM POLICE_USER, MEMBER_USER
+   WHERE POLICE_USER.MEM_USER_NO = MEMBER_USER.MEM_USER_NO 
+   AND P_USER_NO = #{P_USER_NO}
+   ]]>
+   </select>
+   
+   <select id="reportUserBView" parameterType="hashmap"
+      resultType="hashmap">
+   <![CDATA[
+   SELECT * FROM POLICE_USER, USER_BLACKLIST 
+   WHERE USER_BLACKLIST.MEM_USER_NO = POLICE_USER.MEM_USER_NO 
+   AND P_USER_NO = #{P_USER_NO}
+   ]]>
+   </select>
+   
+   
+
+   <update id="refusalUserUpdate" parameterType="hashmap">
+    <![CDATA[ 
+    UPDATE 
+      POLICE_USER SET
+      P_USER_REFUSAL = #{P_USER_REFUSAL}
+      WHERE 
+      P_USER_NO = #{P_USER_NO} 
+      ]]>
+       </update>
+       
+       <update id="updateStatus1" parameterType="hashmap">
+   <![CDATA[
+   UPDATE POLICE_USER
+   SET
+   P_USER_STATUS = NVL(P_USER_STATUS, 0) +1
+   WHERE
+   P_USER_NO = #{P_USER_NO}
+   
+   ]]>
+   </update> 
+   
+   <update id="cancelStatus1" parameterType="hashmap">
+   <![CDATA[
+   UPDATE POLICE_USER
+   SET
+   P_USER_STATUS = NVL(P_USER_STATUS, 0) -1
+   WHERE
+   P_USER_NO = #{P_USER_NO}
+   
+   ]]>
+   </update> 
+      
+      <update id="updateStatus2" parameterType="hashmap">
+   <![CDATA[
+   UPDATE POLICE_USER
+   SET
+   P_USER_STATUS = NVL(P_USER_STATUS, 0) +2
+   WHERE
+   P_USER_NO = #{P_USER_NO}
+   
+   ]]>
+   </update>
+   
+
+   
+      
+   <update id="updateApproval" parameterType="hashmap">
+   <![CDATA[
+   UPDATE MEMBER_USER
+   SET
+   MEM_USER_BLACK = NVL(MEM_USER_BLACK, 0) +1
+   WHERE
+   MEM_USER_NO = #{MEM_USER_NO}
+   
+   ]]>
+   </update>
+       
+      
+   <select id="reportUserInsert" parameterType="hashmap"
+      resultType="hashmap">
+      <![CDATA[
+   INSERT INTO USER_BLACKLIST 
+(MEM_USER_NO,
+MEM_USER_USERID,
+MEM_USER_PASSWORD,
+MEM_USER_USERNAME,
+MEM_USER_PHONE,
+MEM_USER_USEREMAIL,
+MEM_USER_ZIPCODE,
+MEM_USER_ZIBUNADDR,
+MEM_USER_LOADADDR,
+MEM_USER_DETAILADDR,
+MEM_USER_BIRTH,
+MEM_USER_OUT,
+MEM_USER_BLACK,
+MEM_USER_JOIN_DATE,
+MEM_LIKE_COM,
+MEM_LIKE_DEAL,
+MEM_TOKEN)
+
+SELECT 
+MEM_USER_NO,
+MEM_USER_USERID,
+MEM_USER_PASSWORD,
+MEM_USER_USERNAME,
+MEM_USER_PHONE,
+MEM_USER_USEREMAIL,
+MEM_USER_ZIPCODE,
+MEM_USER_ZIBUNADDR,
+MEM_USER_LOADADDR,
+MEM_USER_DETAILADDR,
+MEM_USER_BIRTH,
+MEM_USER_OUT,
+MEM_USER_BLACK,
+MEM_USER_JOIN_DATE,
+MEM_LIKE_COM,
+MEM_LIKE_DEAL,
+MEM_TOKEN
+
+FROM MEMBER_USER
+
+WHERE MEM_USER_BLACK >= 5
+ ]]>
+   </select>
+
+<delete id="reportUserDelete" parameterType="hashmap">
+    <![CDATA[
+        DELETE MEMBER_USER
+        WHERE
+            MEM_USER_BLACK >= 5
+    ]]>
+   </delete>
+   
+   <update id="reportUserRevDelete" parameterType="hashmap">
+    <![CDATA[
+        UPDATE REVIEW SET RE_GB = 'Y'
+        WHERE
+            RE_NO = #{RE_NO}
+    ]]>
+   </update>
+   
+
+
+</mapper>
+

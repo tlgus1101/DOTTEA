@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="deal">
+
+	<select id="selectMainTeaRecommendList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT
+			    DEAL_NO,
+			    DEAL_IMGSV,
+			    DEAL_TITLE,
+			    DEAL_PRICE,
+			    DEAL_DATE,
+				DEAL_COUNT			    
+			FROM(
+			
+			SELECT * FROM  DEAL 
+			WHERE DEAL_GB = 'N'
+			ORDER BY DEAL_FAV DESC ) WHERE ROWNUM <= 6
+		]]>
+	</select>
+
+
+	<select id="searchTeaDealList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+		<![CDATA[
+		SELECT ROW_NUMBER() OVER (ORDER BY ${selectType} ) RNUM,
+				a.DEAL_NO, a.MEM_COM_ID, a.DEAL_TITLE,
+				a.DEAL_TYPE, a.DEAL_PRICE, a.DEAL_IMGOG,
+				a.DEAL_IMGSV, a.DEAL_CONTENT, a.DEAL_VOL,
+				a.DEAL_UNIT, a.DEAL_COUNT, a.DEAL_ORG,
+				a.DEAL_FAV, a.DEAL_GB, a.DEAL_DATE,b.MEM_COM_NO,b.MEM_COM_NAME	
+			FROM DEAL a join MEMBER_COMPANY b on a.MEM_COM_ID = b.MEM_COM_ID  
+			
+			WHERE DEAL_GB = 'N' AND a.DEAL_TITLE like #{inputKeyword}
+		]]>
+		<include refid="common.pagingPost"></include>
+	</select>
+
+
+
+
+	<select id="selectTeaList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+		<![CDATA[
+		SELECT ROW_NUMBER() OVER (ORDER BY ${selectType} ) RNUM,
+				a.DEAL_NO, a.MEM_COM_ID, a.DEAL_TITLE,
+				a.DEAL_TYPE, a.DEAL_PRICE, a.DEAL_IMGOG,
+				a.DEAL_IMGSV, a.DEAL_CONTENT, a.DEAL_VOL,
+				a.DEAL_UNIT, a.DEAL_COUNT, a.DEAL_ORG,
+				a.DEAL_FAV, a.DEAL_GB, a.DEAL_DATE,b.MEM_COM_NO,b.MEM_COM_NAME	
+			FROM DEAL a join MEMBER_COMPANY b on a.MEM_COM_ID = b.MEM_COM_ID 
+			WHERE DEAL_GB = 'N' AND DEAL_TYPE=#{type}
+		]]>
+		<include refid="common.pagingPost"></include>
+	</select>
+
+	<select id="teaEventList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+      <![CDATA[
+      SELECT ROW_NUMBER() OVER (ORDER BY ${selectType} ) RNUM,
+            a.DEAL_NO, a.MEM_COM_ID, a.DEAL_TITLE,
+            a.DEAL_TYPE, a.DEAL_PRICE, a.DEAL_IMGOG,
+            a.DEAL_IMGSV, a.DEAL_CONTENT, a.DEAL_VOL,
+            a.DEAL_UNIT, a.DEAL_COUNT, a.DEAL_ORG,
+            a.DEAL_FAV, a.DEAL_GB, a.DEAL_DATE,b.MEM_COM_NO,b.MEM_COM_NAME   
+         FROM DEAL a join MEMBER_COMPANY b on a.MEM_COM_ID = b.MEM_COM_ID 
+         WHERE DEAL_GB = 'N' AND DEAL_TYPE=#{type}
+      ]]>
+		<include refid="common.pagingPost"></include>
+	</select>
+
+	<select id="teaAccList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+      <![CDATA[
+      SELECT ROW_NUMBER() OVER (ORDER BY ${selectType} ) RNUM,
+            a.DEAL_NO, a.MEM_COM_ID, a.DEAL_TITLE,
+            a.DEAL_TYPE, a.DEAL_PRICE, a.DEAL_IMGOG,
+            a.DEAL_IMGSV, a.DEAL_CONTENT, a.DEAL_VOL,
+            a.DEAL_UNIT, a.DEAL_COUNT, a.DEAL_ORG,
+            a.DEAL_FAV, a.DEAL_GB, a.DEAL_DATE,b.MEM_COM_NO,b.MEM_COM_NAME   
+         FROM DEAL a join MEMBER_COMPANY b on a.MEM_COM_ID = b.MEM_COM_ID 
+         WHERE DEAL_GB = 'N' AND DEAL_TYPE=#{type}
+      ]]>
+		<include refid="common.pagingPost"></include>
+	</select>
+
+	<select id="selectTeaTotalList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+		<![CDATA[
+		SELECT ROW_NUMBER() OVER (ORDER BY ${selectType} ) RNUM,
+				a.DEAL_NO, a.MEM_COM_ID, a.DEAL_TITLE,
+				a.DEAL_TYPE, a.DEAL_PRICE, a.DEAL_IMGOG,
+				a.DEAL_IMGSV, a.DEAL_CONTENT, a.DEAL_VOL,
+				a.DEAL_UNIT, a.DEAL_COUNT, a.DEAL_ORG,
+				a.DEAL_FAV, a.DEAL_GB, a.DEAL_DATE,b.MEM_COM_NO,b.MEM_COM_NAME		
+			FROM DEAL a join MEMBER_COMPANY b on a.MEM_COM_ID = b.MEM_COM_ID
+			WHERE DEAL_GB = 'N' AND DEAL_TYPE >= #{typeStart} AND DEAL_TYPE <= #{typeEnd}
+		]]>
+		<include refid="common.pagingPost"></include>
+	</select>
+
+
+
+	<select id="selectTeaDealDetail" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		SELECT * FROM DEAL a join MEMBER_COMPANY b on a.MEM_COM_ID = b.MEM_COM_ID
+			WHERE DEAL_NO = #{NO}
+		]]>
+	</select>
+
+
+
+
+
+	<select id="dealList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT
+				DEAL_NO, MEM_COM_ID, DEAL_TITLE,
+				DEAL_TYPE, DEAL_PRICE, DEAL_IMGOG,
+				DEAL_IMGSV, DEAL_CONTENT, DEAL_VOL,
+				DEAL_UNIT, DEAL_COUNT, DEAL_ORG,
+				DEAL_FAV, DEAL_GB, DEAL_DATE
+			FROM
+			    DEAL
+			WHERE DEAL_GB = 'N';
+		]]>
+	</select>
+
+	<update id="likeDeal" parameterType="hashmap">
+		<![CDATA[
+		UPDATE DEAL
+		SET
+		DEAL_FAV = (DEAL_FAV ${DEAL_FAV})
+		 WHERE
+		DEAL_NO = #{DEAL_NO}
+		]]>
+	</update>
+
+	<!-- <update id="deleteDeal" parameterType="hashmap"> <![CDATA[ UPDATE DEAL 
+		SET DEAL_GB = 'Y' WHERE DEAL_NO = #{IDX} ]]> </update> -->
+
+	<!-- <update id="updateDeal" parameterType="hashmap"> <![CDATA[ ]]> </update> -->
+</mapper>

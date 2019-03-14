@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="blcom">
+
+	<select id="blcomList" parameterType="hashmap" resultType="hashmap">
+	<include refid="common.pagingPre"/>
+	<![CDATA[
+	SELECT 
+	ROW_NUMBER() OVER (ORDER BY MEM_COM_NO DESC) RNUM,
+	MEM_COM_NO,
+MEM_COM_ID,
+MEM_COM_RESI,
+MEM_COM_COMNUM,
+MEM_COM_NAME,
+MEM_COM_FAX,
+MEM_COM_MANAGER_PHONE,
+MEM_COM_COMPANY_PHONE,
+MEM_COM_MANAGER_EMAIL,
+MEM_COM_COMPANY_EMAIL,
+MEM_COM_ZIPCODE,
+MEM_COM_ZIBUNADDR,
+MEM_COM_LOADADDR,
+MEM_COM_DETAILADDR,
+MEM_COM_DELIVERYFREE,
+MEM_COM_ACCOUNT,
+MEM_COM_BLACK,
+MEM_COM_JOIN_DATE
+	FROM COM_BLACKLIST
+	]]>
+	<include refid="common.pagingPost"/>
+	</select>
+	
+	
+	<select id="blcomView" parameterType="hashmap"
+		resultType="hashmap">
+	<![CDATA[
+	SELECT * FROM COM_BLACKLIST WHERE MEM_COM_NO = #{MEM_COM_NO}
+	]]>
+	</select>
+	
+	<update id="blcomUpdate" parameterType="hashmap">
+	 <![CDATA[ 
+	 UPDATE 
+		COM_BLACKLIST SET
+	MEM_COM_ID = #{MEM_COM_ID },
+	MEM_COM_PASSWORD = #{MEM_COM_PASSWORD },
+	MEM_COM_OWNER = #{MEM_COM_OWNER },
+	MEM_COM_RESI = #{MEM_COM_RESI },
+	MEM_COM_COMNUM = #{MEM_COM_COMNUM },
+	MEM_COM_NAME = #{MEM_COM_NAME },
+	MEM_COM_FAX = #{MEM_COM_FAX },
+	MEM_COM_MANAGER_PHONE = #{MEM_COM_MANAGER_PHONE },
+	MEM_COM_COMPANY_PHONE = #{MEM_COM_COMPANY_PHONE },
+	MEM_COM_MANAGER_EMAIL = #{MEM_COM_MANAGER_EMAIL },
+	MEM_COM_COMPANY_EMAIL = #{MEM_COM_COMPANY_EMAIL },
+	MEM_COM_ZIPCODE = #{MEM_COM_ZIPCODE },
+	MEM_COM_ZIBUNADDR = #{MEM_COM_ZIBUNADDR },
+	MEM_COM_LOADADDR = #{MEM_COM_LOADADDR },
+	MEM_COM_DETAILADDR = #{MEM_COM_DETAILADDR },
+	MEM_COM_DELIVERYFREE = #{MEM_COM_DELIVERYFREE },
+	MEM_COM_ACCOUNT = #{MEM_COM_ACCOUNT },
+	MEM_COM_BLACK = #{MEM_COM_BLACK },
+	MEM_COM_NET = #{MEM_COM_NET }
+	 WHERE        
+            MEM_COM_NO = #{MEM_COM_NO}
+		
+		]]>
+	</update>
+
+	<update id="blcomDelete" parameterType="hashmap">
+    <![CDATA[
+        UPDATE COM_BLACKLIST
+        SET
+        MEM_COM_OUT ='Y'
+        WHERE        
+            MEM_COM_NO = #{MEM_COM_NO}
+    ]]>
+	</update>
+
+
+
+
+</mapper>
+
+

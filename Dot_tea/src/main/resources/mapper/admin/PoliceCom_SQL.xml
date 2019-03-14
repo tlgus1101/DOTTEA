@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="policeCom">
+   <select id="reportComList" parameterType="hashmap"
+      resultType="hashmap">
+      <include refid="common.pagingPre" />
+   <![CDATA[
+   SELECT
+   ROW_NUMBER() OVER (ORDER BY P_COM_NO DESC) RNUM,
+   P_COM_NO,
+   DEAL_NO,
+   MEM_COM_NO,
+   P_COM_SUBJECT,
+   P_COM_CONTENT ,
+   P_COM_STATUS,
+   P_COM_GB,
+   TO_CHAR(P_COM_DATE, 'YYYY.MM.DD') AS P_COM_DATE,
+   P_REPORTER_ID 
+   FROM
+   POLICE_COM
+   WHERE
+   P_COM_GB ='N'
+   AND  ${searchType}  LIKE  #{keyword}
+   
+   ]]>
+      <include refid="common.pagingPost" />
+   </select>
+   
+   <select id="reportBlComList" parameterType="hashmap"
+      resultType="hashmap">
+      <include refid="common.pagingPre" />
+   <![CDATA[
+   SELECT
+   ROW_NUMBER() OVER (ORDER BY A.P_COM_NO DESC) RNUM,
+   A.P_COM_NO,
+   A.DEAL_NO,
+   A.MEM_COM_NO,
+   A.P_COM_SUBJECT,
+   A.P_COM_CONTENT ,
+   A.P_COM_STATUS,
+   A.P_COM_GB,
+   TO_CHAR(A.P_COM_DATE, 'YYYY.MM.DD') AS P_COM_DATE,
+   A.P_REPORTER_ID 
+   FROM
+   POLICE_COM A, COM_BLACKLIST B
+   WHERE
+   A.MEM_COM_NO = B.MEM_COM_NO
+   AND
+   P_COM_GB ='N'
+   AND  ${searchType}  LIKE  #{keyword}
+   
+   ]]>
+      <include refid="common.pagingPost" />
+   </select>
+   
+   
+   
+
+<select id="reportComView" parameterType="hashmap"
+      resultType="hashmap">
+   <![CDATA[
+   SELECT * FROM POLICE_COM, MEMBER_COMPANY
+   WHERE POLICE_COM.MEM_COM_NO = MEMBER_COMPANY.MEM_COM_NO
+   AND P_COM_NO = #{P_COM_NO} 
+   ]]>
+   </select>
+   
+   <select id="reportComBView" parameterType="hashmap"
+      resultType="hashmap">
+   <![CDATA[
+   SELECT * FROM POLICE_COM, COM_BLACKLIST
+   WHERE POLICE_COM.MEM_COM_NO = COM_BLACKLIST.MEM_COM_NO
+   AND P_COM_NO = #{P_COM_NO} 
+   ]]>
+   </select>
+   
+   
+   
+      <select id="c_mView" parameterType="hashmap"
+      resultType="hashmap">
+   <![CDATA[
+   SELECT MEM_COM_ID FROM MEMBER_COMPANY WHERE MEM_COM_NO = #{MEM_COM_NO}
+   
+   ]]>
+   </select>
+   
+
+   <update id="refusalComUpdate" parameterType="hashmap">
+    <![CDATA[ 
+    UPDATE 
+      POLICE_COM SET
+      P_COM_REFUSAL = #{P_COM_REFUSAL}
+      WHERE 
+      P_COM_NO = #{P_COM_NO} 
+      ]]>
+       </update>
+       
+       <update id="updateStatus1" parameterType="hashmap">
+   <![CDATA[
+   UPDATE POLICE_COM
+   SET
+   P_COM_STATUS = NVL(P_COM_STATUS, 0) +1
+   WHERE
+   P_COM_NO = #{P_COM_NO}
+   
+   ]]>
+   </update> 
+   
+   <update id="cancelStatus1" parameterType="hashmap">
+   <![CDATA[
+   UPDATE POLICE_COM
+   SET
+   P_COM_STATUS = NVL(P_COM_STATUS, 0) -1
+   WHERE
+   P_COM_NO = #{P_COM_NO}
+   
+   ]]>
+   </update> 
+      
+      <update id="updateStatus2" parameterType="hashmap">
+   <![CDATA[
+   UPDATE POLICE_COM
+   SET
+   P_COM_STATUS = NVL(P_COM_STATUS, 0) +2
+   WHERE
+   P_COM_NO = #{P_COM_NO}
+   
+   ]]>
+   </update>
+   
+      
+   <update id="updateApproval" parameterType="hashmap">
+   <![CDATA[
+   UPDATE MEMBER_COMPANY
+   SET
+   MEM_COM_BLACK = NVL(MEM_COM_BLACK, 0) +1
+   WHERE
+   MEM_COM_NO = #{MEM_COM_NO}
+   
+   ]]>
+   </update>
+   
+   <select id="reportComInsert" parameterType="hashmap"
+      resultType="hashmap">
+      <![CDATA[
+   INSERT INTO COM_BLACKLIST 
+(MEM_COM_NO,
+MEM_COM_ID,
+MEM_COM_PASSWORD,
+MEM_COM_RESI,
+MEM_COM_COMNUM,
+MEM_COM_NAME,
+MEM_COM_FAX,
+MEM_COM_MANAGER_PHONE,
+MEM_COM_COMPANY_PHONE,
+MEM_COM_MANAGER_EMAIL,
+MEM_COM_COMPANY_EMAIL,
+MEM_COM_ZIPCODE,
+MEM_COM_ZIBUNADDR,
+MEM_COM_LOADADDR,
+MEM_COM_DETAILADDR,
+MEM_COM_DELIVERYFREE,
+MEM_COM_OUT,
+MEM_COM_BLACK,
+MEM_COM_JOIN_DATE)
+
+SELECT 
+MEM_COM_NO,
+MEM_COM_ID,
+MEM_COM_PASSWORD,
+MEM_COM_RESI,
+MEM_COM_COMNUM,
+MEM_COM_NAME,
+MEM_COM_FAX,
+MEM_COM_MANAGER_PHONE,
+MEM_COM_COMPANY_PHONE,
+MEM_COM_MANAGER_EMAIL,
+MEM_COM_COMPANY_EMAIL,
+MEM_COM_ZIPCODE,
+MEM_COM_ZIBUNADDR,
+MEM_COM_LOADADDR,
+MEM_COM_DETAILADDR,
+MEM_COM_DELIVERYFREE,
+MEM_COM_OUT,
+MEM_COM_BLACK,
+MEM_COM_JOIN_DATE
+
+FROM MEMBER_COMPANY
+
+WHERE MEM_COM_BLACK >=5
+ ]]>
+   </select>
+
+   <delete id="reportComDelete" parameterType="hashmap">
+    <![CDATA[
+        DELETE MEMBER_COMPANY
+        WHERE
+            MEM_COM_BLACK >=5
+    ]]>
+   </delete>
+   
+   
+   <update id="reportComDealDelete" parameterType="hashmap">
+    <![CDATA[
+        UPDATE DEAL SET DEAL_GB = 'Y'
+        WHERE
+            DEAL_NO = #{DEAL_NO}
+    ]]>
+   </update>
+
+
+
+
+</mapper>
+

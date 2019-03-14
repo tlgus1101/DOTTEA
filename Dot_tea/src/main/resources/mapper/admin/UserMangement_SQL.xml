@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="u_managerment">
+	<!-- <select id="noticeList" parameterType="hashmap" resultType="hashmap"> 
+		<![CDATA[ select n_no, n_subject, n_content, n_readhit, n_date from notice 
+		ORDER BY n_no DESC ]]> </select> -->
+
+
+	<select id="u_mList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+	<![CDATA[
+	SELECT
+	ROW_NUMBER() OVER (ORDER BY MEM_USER_NO DESC) RNUM,
+	MEM_USER_NO,
+	MEM_USER_USERID,
+	MEM_USER_USERNAME,
+	MEM_USER_PHONE,
+	MEM_USER_USEREMAIL,
+	MEM_USER_BLACK
+	FROM
+	MEMBER_USER
+	WHERE
+	MEM_USER_OUT ='N'
+	AND  ${searchType}  LIKE  #{keyword}
+	
+	]]>
+		<include refid="common.pagingPost" />
+	</select>
+
+	<select id="u_mView" parameterType="hashmap"
+		resultType="hashmap">
+	<![CDATA[
+	SELECT * FROM MEMBER_USER WHERE MEM_USER_NO = #{MEM_USER_NO}
+	
+	]]>
+	</select>
+
+	<update id="u_mUpdate" parameterType="hashmap">
+	 <![CDATA[ 
+	 UPDATE 
+		MEMBER_USER SET
+	
+	MEM_USER_USERID = #{MEM_USER_USERID},
+	MEM_USER_PASSWORD = #{MEM_USER_PASSWORD },
+	MEM_USER_USERNAME = #{MEM_USER_USERNAME },
+	MEM_USER_PHONE = #{MEM_USER_PHONE },
+	MEM_USER_USEREMAIL = #{MEM_USER_USEREMAIL },
+	MEM_USER_ZIPCODE = #{MEM_USER_ZIPCODE },
+	MEM_USER_ZIBUNADDR = #{MEM_USER_ZIBUNADDR },
+	MEM_USER_LOADADDR = #{MEM_USER_LOADADDR },
+	MEM_USER_DETAILADDR = #{MEM_USER_DETAILADDR },
+	MEM_USER_BIRTH = #{MEM_USER_BIRTH },
+	MEM_USER_BLACK = #{MEM_USER_BLACK },
+	MEM_LIKE_COM = #{MEM_LIKE_COM },
+	MEM_LIKE_DEAL = #{MEM_LIKE_DEAL }
+	
+	 WHERE MEM_USER_NO 
+		= #{MEM_USER_NO} 
+		]]>
+	</update>
+
+
+
+	<update id="u_mDelete" parameterType="hashmap">
+    <![CDATA[
+        UPDATE MEMBER_USER
+        SET
+        MEM_USER_OUT ='Y'
+        WHERE        
+            MEM_USER_NO = #{MEM_USER_NO}
+    ]]>
+	</update>
+
+
+
+	
+
+
+
+
+</mapper>
+
+

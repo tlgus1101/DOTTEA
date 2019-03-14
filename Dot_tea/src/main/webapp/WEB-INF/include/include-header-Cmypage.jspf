@@ -1,0 +1,174 @@
+<%@ page pageEncoding="utf-8"%>
+
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title></title>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
+
+<link rel="stylesheet" type="text/css"
+	href="<c:url value='/css/ui.css'/>" />
+
+<!-- jQuery -->
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+<script src="<c:url value='/js/common.js'/>" charset="utf-8"></script>
+<script>
+	$(window).scroll(function() {
+		$('#banner').animate({
+			top : $(window).scrollTop() + "px"
+		}, {
+			queue : false,
+			duration : 500
+		});
+	});
+</script>
+
+<link rel="styleSheet"
+	href="https://www.kurly.com//shop/data/skin/designgj/normalize.css?ver=201901141354">
+<link rel="styleSheet"
+	href="https://www.kurly.com//shop/data/skin/designgj/section1.css?ver=201901141354">
+<link rel="styleSheet"
+	href="https://www.kurly.com//shop/data/skin/designgj/section2.css?ver=201901141354">
+<link rel="styleSheet"
+	href="https://www.kurly.com//shop/data/skin/designgj/common.css?ver=201901141354">
+<link rel="styleSheet"
+	href="https://www.kurly.com//shop/data/skin/designgj/css/goods_style.css?ver=201901141354">
+<script type="text/javascript">
+	function openWin() {
+
+		var url = '${pageContext.request.contextPath}'
+				+ "/com_setting/settingDetail.tea?MEM_COM_NO=" + '${NOSession}';
+		window
+				.open(url, "비밀번호 확인",
+						"width=auto, heigth=auto, toolbar=no, menubar=no, scrollbars=no, resizable=yes");
+	}
+</script>
+<body>
+	<div id="userMenu">
+		<br> &nbsp; &nbsp; <a
+			href="${pageContext.request.contextPath}/teaDeal/TeaRecommendList.tea">
+			<center>
+				<img src="${pageContext.request.contextPath}/images/DOTTEALogo.png"
+					width="500" height="105" />
+			</center>
+		</a>
+		<ul class="list_menu">
+			<c:choose>
+
+				<c:when test="${NOSession == null}">
+					<li class="menu none_sub"><a
+						href="${pageContext.request.contextPath}/join/jointype.tea"
+						class="link_menu">회원가입</a></li>
+					<li class="menu none_sub"><a
+						href="${pageContext.request.contextPath}/login/loginForm.tea"
+						class="link_menu">로그인 </a></li>
+				</c:when>
+				<c:otherwise>
+					<li class="menu none_sub"><c:choose>
+							<c:when test="${typeSession == 0}">
+								<!--관리자  -->
+								<%-- <a
+									href="javascript:window.open('${pageContext.request.contextPath}/admin/Main.tea','window','width=1200, height=850, left = 100,top=5')"
+									class="link_menu">관리자 페이지 </a> --%>
+								<a
+									href="javascript:window.open('${pageContext.request.contextPath}/admin/Main.tea')"
+									class="link_menu">관리자 페이지 </a>
+							</c:when>
+							<c:when test="${typeSession == 1}">
+								<!--개인  -->
+								<a href="${pageContext.request.contextPath}/member/mypage.tea"
+									class="link_menu">마이페이지</a>
+							</c:when>
+							<c:when test="${typeSession == 2}">
+
+								<!--기업  -->
+								<a
+									href="${path}/Dot_tea/com_or/openBoardList.tea?MEM_COM_NO=${NOSession}"
+									class="link_menu">마이페이지</a>
+							</c:when>
+						</c:choose></li>
+					<li class="menu none_sub"><a
+						href="${pageContext.request.contextPath}/login/logout.tea"
+						class="link_menu">로그아웃</a></li>
+				</c:otherwise>
+			</c:choose>
+
+			<li class="menu"><a href="#none" onclick="return false;"
+				class="link_menu">고객센터 </a>
+				<ul class="sub">
+					<li><a href="/shop/board/list.php?id=notice">공지사항</a></li>
+					<li><a
+						href="javascript:window.open('/Dot_tea/teaMailQnA.tea','pop','toolbar=no, status=no,resizeable=no ,width=1000, height=700, left = 100,top=5')">1:1
+							문의</a></li>
+				</ul></li>
+		</ul>
+	</div>
+	<div id="gnb" class="">
+		<h2 class="screen_out">메뉴</h2>
+		<div id="gnbMenu" class="gnb_kurly">
+			<div class="inner_gnbkurly">
+				<div class="gnb_main">
+					<ul class="gnb">
+						<li class="active" rel="tab1"
+							style="color: #ffffff; background-color: #532074"><a
+							href="javascript:openWin();"> <span class="text"
+								style="color: #ffffff">설정</span></a></li>
+						<li rel="tab2"><a
+							href="${path}/Dot_tea/shop/openBoardList.tea?MEM_COM_ID=${idSession}">
+								<span class="text">상품관리</span>
+						</a></li>
+						<li rel="tab3"><a
+							href="${path}/Dot_tea/com_or/openBoardList.tea?MEM_COM_NO=${NOSession}">
+								<span class="text">주문/배송조회</span>
+						</a></li>
+						<li rel="tab4"><a
+							href="${path}/Dot_tea/com_re/openBoardList.tea?MEM_COM_ID=${idSession}"">
+								<span class="text">후기관리</span>
+						</a></li>
+						<li rel="tab5"><a
+							href="${path}/Dot_tea/com_qna/openQnAList.tea?MEM_COM_ID=${idSession}"">
+								<span class="text">Q/A 관리</span>
+						</a></li>
+					</ul>
+					<div id="side_search" class="gnb_search">
+						<form
+							action="${pageContext.request.contextPath}/teaDeal/searchTeaDeal.tea;"
+							method="post">
+							<input name="searchKeyword" id="searchKeyword" type="text"
+								label="검색어" class="inp_search"> <input type="image"
+								src="../images/search.png" class="btn_search">
+						</form>
+					</div>
+
+
+					<div class="cart_count">
+						<div class="inner_cartcount">
+							<a
+								href="${pageContext.request.contextPath}/member/teaBasketList.tea"
+								class="btn_cart"><img src="../images/ico_cart.png"
+								alt="장바구니"> <span id="cart_item_count"
+								class="num realtime_cartcount" style="display: none;"></span></a>
+						</div>
+
+
+						<!-- <div id="addMsgCart" class="msg_cart">
+							<span class="point"></span>
+							<div class="inner_msgcart">
+								<img src="https://res.kurly.com/images/common/bg_1_1.gif" alt=""
+									class="thumb">
+								<p class="desc">
+									<span class="tit"></span> <span class="txt">장바구니에 담겼습니다.</span>
+								</p>
+							</div>
+						</div> -->
+					</div>
+
+				</div>
+			</div>
+			<div class="bg"></div>
+		</div>
+	</div>
+
+</body>

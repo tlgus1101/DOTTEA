@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="c_management">
+	<!-- <select id="noticeList" parameterType="hashmap" resultType="hashmap"> 
+		<![CDATA[ select n_no, n_subject, n_content, n_readhit, n_date from notice 
+		ORDER BY n_no DESC ]]> </select> -->
+
+
+	<select id="c_mList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+	<![CDATA[
+	SELECT
+	ROW_NUMBER() OVER (ORDER BY MEM_COM_NO DESC) RNUM,
+	MEM_COM_NO,
+	MEM_COM_ID,
+	MEM_COM_NAME,
+	MEM_COM_RESI,
+	MEM_COM_MANAGER_PHONE,
+	MEM_COM_MANAGER_EMAIL,
+	MEM_COM_BLACK
+	FROM
+	MEMBER_COMPANY
+	WHERE
+	MEM_COM_OUT ='N'
+	AND  ${searchType}  LIKE  #{keyword}
+	
+	]]>
+		<include refid="common.pagingPost" />
+	</select>
+
+	<select id="c_mView" parameterType="hashmap"
+		resultType="hashmap">
+	<![CDATA[
+	SELECT * FROM MEMBER_COMPANY WHERE MEM_COM_NO = #{MEM_COM_NO}
+	
+	]]>
+	</select>
+
+	<update id="c_mUpdate" parameterType="hashmap">
+	 <![CDATA[ 
+	 UPDATE 
+		MEMBER_COMPANY SET
+	MEM_COM_ID = #{MEM_COM_ID },
+	MEM_COM_PASSWORD = #{MEM_COM_PASSWORD },
+	MEM_COM_OWNER = #{MEM_COM_OWNER },
+	MEM_COM_RESI = #{MEM_COM_RESI },
+	MEM_COM_COMNUM = #{MEM_COM_COMNUM },
+	MEM_COM_NAME = #{MEM_COM_NAME },
+	MEM_COM_FAX = #{MEM_COM_FAX },
+	MEM_COM_MANAGER_PHONE = #{MEM_COM_MANAGER_PHONE },
+	MEM_COM_COMPANY_PHONE = #{MEM_COM_COMPANY_PHONE },
+	MEM_COM_MANAGER_EMAIL = #{MEM_COM_MANAGER_EMAIL },
+	MEM_COM_COMPANY_EMAIL = #{MEM_COM_COMPANY_EMAIL },
+	MEM_COM_ZIPCODE = #{MEM_COM_ZIPCODE },
+	MEM_COM_ZIBUNADDR = #{MEM_COM_ZIBUNADDR },
+	MEM_COM_LOADADDR = #{MEM_COM_LOADADDR },
+	MEM_COM_DETAILADDR = #{MEM_COM_DETAILADDR },
+	MEM_COM_DELIVERYFREE = #{MEM_COM_DELIVERYFREE },
+	MEM_COM_ACCOUNT = #{MEM_COM_ACCOUNT },
+	MEM_COM_BLACK = #{MEM_COM_BLACK },
+	MEM_COM_NET = #{MEM_COM_NET }
+	 WHERE        
+            MEM_COM_NO = #{MEM_COM_NO}
+		
+		]]>
+	</update>
+
+	<update id="c_mDelete" parameterType="hashmap">
+    <![CDATA[
+        UPDATE MEMBER_COMPANY
+        SET
+        MEM_COM_OUT ='Y'
+        WHERE        
+            MEM_COM_NO = #{MEM_COM_NO}
+    ]]>
+	</update>
+
+</mapper>
+
+

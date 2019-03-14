@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="login">
+
+
+	<!-- <![CDATA[ ]]> -->
+
+	<insert id="user_insert" parameterType="hashmap">
+      <![CDATA[
+         INSERT INTO MEMBER_USER
+         (
+      MEM_USER_NO, MEM_USER_USERID, MEM_USER_PASSWORD,
+      MEM_USER_USERNAME, MEM_USER_PHONE, MEM_USER_USEREMAIL,
+      MEM_USER_ZIPCODE, MEM_USER_ZIBUNADDR, MEM_USER_LOADADDR,
+      MEM_USER_DETAILADDR, MEM_USER_BIRTH, MEM_USER_OUT,
+      MEM_USER_BLACK,
+      MEM_TOKEN, MEM_USER_JOIN_DATE
+      )VALUES(
+      SEQ_TEA_MEM_USER_NO.NEXTVAL, #{MEM_USER_USERID}, #{MEM_USER_PASSWORD},
+      #{MEM_USER_USERNAME}, #{MEM_USER_PHONE}, #{MEM_USER_USEREMAIL},
+      #{MEM_USER_ZIPCODE}, #{MEM_USER_ZIBUNADDR}, #{MEM_USER_LOADADDR},
+      #{MEM_USER_DETAILADDR}, #{MEM_USER_BIRTH}, 'N',
+      0,
+      NULL, SYSDATE
+      )
+      ]]>
+	</insert>
+
+
+	<insert id="com_insert" parameterType="hashmap">
+		<![CDATA[
+			    INSERT INTO MEMBER_COMPANY (MEM_COM_NO,MEM_COM_ID,
+				MEM_COM_PASSWORD,MEM_COM_RESI,MEM_COM_COMNUM,
+				MEM_COM_NAME,MEM_COM_FAX,MEM_COM_MANAGER_PHONE,
+				MEM_COM_COMPANY_PHONE,MEM_COM_MANAGER_EMAIL,MEM_COM_COMPANY_EMAIL,
+				MEM_COM_ZIPCODE,MEM_COM_ZIBUNADDR,MEM_COM_LOADADDR,
+				MEM_COM_DETAILADDR,MEM_COM_DELIVERYFREE,MEM_COM_ACCOUNT,
+				MEM_COM_OUT,MEM_COM_BLACK,MEM_COM_JOIN_DATE,MEM_COM_OWNER
+				) VALUES ( SEQ_MEM_COM_NO.NEXTVAL,	#{MEM_COM_ID},#{MEM_COM_PASSWORD},
+				#{MEM_COM_RESI},#{MEM_COM_COMNUM},#{MEM_COM_NAME},
+				#{MEM_COM_FAX},#{MEM_COM_MANAGER_PHONE},#{MEM_COM_COMPANY_PHONE},
+				#{MEM_COM_MANAGER_EMAIL},#{MEM_COM_COMPANY_EMAIL},#{MEM_COM_ZIPCODE},
+				#{MEM_COM_ZIBUNADDR},#{MEM_COM_LOADADDR},#{MEM_COM_DETAILADDR},
+				#{MEM_COM_DELIVERYFREE},#{MEM_COM_ACCOUNT},'N',0,SYSDATE,#{MEM_COM_OWNER})
+		]]>
+	</insert>
+
+	<select id="user_login_select" parameterType="hashmap"
+		resultType="hashmap">
+      <![CDATA[
+      SELECT MEM_USER_NO,MEM_USER_USERID,MEM_USER_USERNAME
+      FROM MEMBER_USER
+      WHERE MEM_USER_USERID = #{MEM_USER_USERID}
+      AND MEM_USER_PASSWORD = #{MEM_USER_PASSWORD}
+      AND MEM_USER_OUT = 'N'
+      ]]>
+	</select>
+
+	<select id="com_Login_select" parameterType="hashmap"
+		resultType="hashmap">
+	 	<![CDATA[
+	 	SELECT MEM_COM_NO,MEM_COM_ID,MEM_COM_NAME FROM MEMBER_COMPANY WHERE MEM_COM_ID = #{MEM_COM_ID} 
+			AND MEM_COM_PASSWORD = #{MEM_COM_PASSWORD} AND MEM_COM_OUT ='N'
+	 	]]>
+	</select>
+
+
+	<select id="admin_Login_select" parameterType="hashmap"
+		resultType="hashmap">
+	 	<![CDATA[
+	 	SELECT ID FROM ADMIN_ID WHERE ID = #{ADMIN_ID} 
+			AND PASSWORD = #{ADMIN_PW} 
+	 	]]>
+	</select>
+
+
+	<select id="com_chk_id" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MEM_COM_NO FROM MEMBER_COMPANY WHERE MEM_COM_ID =
+		#{inputID}
+	</select>
+
+	<select id="com_chk_man_email" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MEM_COM_MANAGER_EMAIL FROM MEMBER_COMPANY
+		WHERE
+		MEM_COM_MANAGER_EMAIL = #{inputEmail} AND MEM_COM_OUT ='N'
+	</select>
+
+	<select id="com_chk_blackMan_email" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MEM_COM_MANAGER_EMAIL FROM COM_BLACKLIST
+		WHERE
+		MEM_COM_MANAGER_EMAIL = #{inputEmail}
+	</select>
+
+
+	<select id="com_chk_blackcom_email" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MEM_COM_COMPANY_EMAIL FROM COM_BLACKLIST
+		WHERE
+		MEM_COM_COMPANY_EMAIL = #{inputEmail2}
+	</select>
+
+	<select id="com_chk_com_email" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MEM_COM_COMPANY_EMAIL FROM MEMBER_COMPANY
+		WHERE
+		MEM_COM_COMPANY_EMAIL = #{inputEmail2} AND MEM_COM_OUT = 'N'
+	</select>
+
+
+
+	<select id="user_chk_id" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MEM_USER_USERID FROM MEMBER_USER WHERE
+		MEM_USER_USERID = #{inputUserID}
+	</select>
+
+	<select id="user_chk_email" parameterType="hashmap"
+		resultType="hashmap">
+		SELECT MEM_USER_USEREMAIL FROM MEMBER_USER
+		WHERE
+		MEM_USER_USEREMAIL = #{inputUserEmail}
+	</select>
+
+
+
+	<select id="find_user_id" parameterType="hashmap"
+		resultType="hashmap">
+       <![CDATA[
+       SELECT MEM_USER_USERID FROM MEMBER_USER 
+       WHERE MEM_USER_USEREMAIL = #{member_email}
+       ]]>
+	</select>
+
+	<select id="find_com_id" parameterType="hashmap"
+		resultType="hashmap">
+       <![CDATA[
+       SELECT MEM_COM_ID FROM MEMBER_COMPANY
+      WHERE MEM_COM_COMPANY_EMAIL = #{member_email}
+       ]]>
+	</select>
+
+
+	<select id="find_user_pw" parameterType="hashmap"
+		resultType="hashmap">
+       <![CDATA[
+       SELECT MEM_USER_USEREMAIL FROM MEMBER_USER
+       WHERE MEM_USER_USERID = #{inputID}
+       AND MEM_USER_USEREMAIL = #{inputEmail}
+      
+       ]]>
+	</select>
+
+	<select id="find_com_pw" parameterType="hashmap"
+		resultType="hashmap">
+       <![CDATA[
+       SELECT MEM_COM_COMPANY_EMAIL FROM MEMBER_COMPANY
+       WHERE MEM_COM_ID = #{inputID}
+       AND MEM_COM_COMPANY_EMAIL = #{inputEmail}
+       ]]>
+	</select>
+
+	<update id="temp_com_pw" parameterType="hashmap">
+   <![CDATA[
+   update MEMBER_COMPANY
+   set MEM_COM_PASSWORD = #{tempKey}
+   WHERE MEM_COM_ID = #{inputID}
+   ]]>
+	</update>
+
+</mapper>

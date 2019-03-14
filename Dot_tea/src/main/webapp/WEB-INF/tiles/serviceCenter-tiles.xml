@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+
+
+	<!-- 서브메뉴 있음 -->
+	<definition name="serviceCenter_main" template="/WEB-INF/main/main.jsp">
+		<put-attribute name="title"
+			value="Remedium Hotel[당신만을 위한 오리엔탈 프리미엄 에디션]" />
+		<put-attribute name="header1" value="/WEB-INF/main/header1.jsp" />
+		<put-attribute name="header2" value="/WEB-INF/main/header2.jsp" />
+		<put-attribute name="body" value="/WEB-INF/main/body.jsp" />
+		<put-attribute name="footer" value="/WEB-INF/main/footer.jsp" />
+	</definition>
+
+
+
+
+	<!-- 서비스센터 메인 -->
+	<definition name="ServiceCenter" extends="serviceCenter_main">
+		<put-attribute name="body" value="/WEB-INF/serviceCenter/main.jsp" />
+	</definition>
+
+
+	<!-- 공지사항 리스트 -->
+	<definition name="NoticeList" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/notice/list.jsp" />
+	</definition>
+
+
+	<!-- 공지사항 개별페이지 -->
+	<definition name="NoticeView" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/notice/view.jsp" />
+	</definition>
+
+	<!-- 공지사항 추가 폼 -->
+	<definition name="NoticeInsertForm" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/notice/insertForm.jsp" />
+	</definition>
+
+
+	<!-- 공지사항 수정 폼 -->
+	<definition name="NoticeModifyForm" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/notice/modifyForm.jsp" />
+	</definition>
+
+
+
+	<!-- 자주묻는질문 리스트 -->
+	<definition name="FAQList" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/FAQ/list.jsp" />
+	</definition>
+
+
+	<!-- 자주묻는질문 개별페이지 -->
+	<definition name="FAQView" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/FAQ/view.jsp" />
+	</definition>
+
+	<!-- 자주묻는질문 추가 폼 -->
+	<definition name="FAQInsertForm" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/FAQ/insertForm.jsp" />
+	</definition>
+
+	<!-- 자주묻는질문 수정 폼 -->
+	<definition name="FAQModifyForm" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/FAQ/modifyForm.jsp" />
+	</definition>
+
+
+
+	<!-- Q&A 리스트 -->
+	<definition name="QuestionList" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/QnA/list.jsp" />
+	</definition>
+
+
+	<!-- Q&A 개별페이지 -->
+	<definition name="QuestionView" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/QnA/view.jsp" />
+	</definition>
+
+	<!-- Q&A 추가 폼 -->
+	<definition name="QuestionInsertForm" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/QnA/insertForm.jsp" />
+	</definition>
+
+
+	<!-- Q&A 수정 폼 -->
+	<definition name="QuestionModifyForm" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/QnA/modifyForm.jsp" />
+	</definition>
+	
+	<!-- Q&A 답글 폼 -->
+	<definition name="QuestionInsertFormRef" extends="serviceCenter_main">
+		<put-attribute name="body"
+			value="/WEB-INF/serviceCenter/QnA/insertForm.jsp" />
+	</definition>
+
+
+
+
+
+</tiles-definitions>
+	
+	

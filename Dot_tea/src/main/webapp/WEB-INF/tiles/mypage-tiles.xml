@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+ 
+ 
+ <definition name="myPage_main" template="/WEB-INF/views/admin/main/main.jsp" >
+ 		<put-attribute name="title" 	value="Remedium Hotel[당신만을 위한 오리엔탈 프리미엄 에디션]" />
+		<put-attribute name="header1" 	value="/WEB-INF/views/admin/main/header1.jsp" />
+		<put-attribute name="header2" 	value="/WEB-INF/views/admin/main/header2.jsp" />
+		<put-attribute name="body" 		value="/WEB-INF/views/admin/main/body.jsp" />		
+		<put-attribute name="footer" 	value="/WEB-INF/views/admin/main/footer.jsp" />	
+ 
+ </definition>
+ 
+ 
+  <definition name="myPage_main2" template="/WEB-INF/views/admin/main/main2.jsp" >
+ 		<put-attribute name="title" 	value="Remedium Hotel[당신만을 위한 오리엔탈 프리미엄 에디션]" />
+		<put-attribute name="header1" 	value="/WEB-INF/views/admin/main/header1.jsp" />
+		<put-attribute name="header2" 	value="/WEB-INF/views/admin/main/header2.jsp" />
+		<put-attribute name="body" 		value="/WEB-INF/views/admin/main/body.jsp" />		
+		<put-attribute name="footer" 	value="/WEB-INF/views/admin/main/footer.jsp" />	
+ 
+ </definition>
+ 
+ 
+ <definition name="MyPage" extends="myPage_main">
+  <put-attribute name="body" value="/WEB-INF/myPage/Main.jsp" />
+ </definition>
+ 
+ <definition name="AdminPage" extends="myPage_main2">
+  <put-attribute name="body" value="/WEB-INF/views/admin/adminMain/AdminMain.jsp" />
+
+ </definition>
+
+
+
+
+</tiles-definitions>
+
+

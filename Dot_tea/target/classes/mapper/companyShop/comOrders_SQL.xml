@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="orders">
+
+	<select id="ordersBoardList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		
+		
+		SELECT * FROM ORDER_DETAIL join ORDERS on ORDER_DETAIL.OR_NO = ORDERS.OR_NO  
+		 AND ORDER_DETAIL.OR_STATUS in(5, 6)
+			    AND MEM_COM_NO = #{MEM_COM_NO}
+			ORDER BY ORDER_DETAIL.OR_STATUS ASC
+		]]>
+	</select>
+
+	<!-- <select id="ordersTotal" parameterType="hashmap" resultType="hashmap"> 
+		<![CDATA[ SELECT DEAL_PRICE, B_COUNT, DEAL_PRICE * B_COUNT as MULTIPLE FROM 
+		ORDER_DETAIL, ORDERS WHERE ORDER_DETAIL.OR_NO = ORDERS.OR_NO AND OR_STATUS 
+		in(5, 6) ORDER BY OR_STATUS ASC ]]> </select> -->
+
+
+	<select id="ordersBoardList2" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		
+		SELECT * FROM ORDER_DETAIL join ORDERS on ORDER_DETAIL.OR_NO = ORDERS.OR_NO  
+		 AND ORDER_DETAIL.OR_STATUS in(1, 7)
+			    AND MEM_COM_NO = #{MEM_COM_NO}
+			ORDER BY ORDER_DETAIL.OR_STATUS ASC
+		]]>
+	</select>
+
+	<select id="ordersBoardList3" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		
+		SELECT * FROM ORDER_DETAIL join ORDERS on ORDER_DETAIL.OR_NO = ORDERS.OR_NO  
+		 AND ORDER_DETAIL.OR_STATUS in(2, 3,8,9)
+			    AND MEM_COM_NO = #{MEM_COM_NO}
+			ORDER BY ORDER_DETAIL.OR_STATUS ASC
+		
+		]]>
+	</select>
+
+	<select id="ordersBoardList4" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		
+		SELECT * FROM ORDER_DETAIL join ORDERS on ORDER_DETAIL.OR_NO = ORDERS.OR_NO  
+		 AND ORDER_DETAIL.OR_STATUS in(4)
+			    AND MEM_COM_NO = #{MEM_COM_NO}
+			ORDER BY ORDER_DETAIL.OR_STATUS ASC
+		
+		]]>
+	</select>
+
+
+	<select id="ordersBoardDetail" parameterType="hashmap"
+		resultType="hashmap">
+	<![CDATA[
+	SELECT * FROM ORDER_DETAIL, ORDERS
+			   WHERE
+			ORDER_DETAIL.OR_NO = ORDERS.OR_NO
+AND ORDER_DETAIL.ORDER_DETAIL_NO = ${ORDER_DETAIL_NO} AND MEM_COM_NO = #{MEM_COM_NO}
+				]]>
+
+	</select>
+
+	<select id="ordersBoardDetailC" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+	SELECT * FROM ORDER_DETAIL, DEAL
+			    WHERE
+			ORDER_DETAIL.DEAL_NO = DEAL.DEAL_NO
+			AND DEAL.DEAL_NO = ${DEAL_NO} AND ORDER_DETAIL_NO = ${ORDER_DETAIL_NO}
+				]]>
+
+	</select>
+
+	<update id="ordersStatus" parameterType="hashmap">
+	<![CDATA[
+	UPDATE ORDER_DETAIL
+	SET
+	OR_STATUS = 6 
+	WHERE
+	OR_NO = #{OR_NO} AND
+	MEM_COM_NO = #{MEM_COM_NO}
+	]]>
+	</update>
+
+	<update id="ordersInsert" parameterType="hashmap">
+<![CDATA[
+UPDATE ORDER_DETAIL
+SET
+OR_DELIVERY = #{OR_DELIVERY},
+OR_WAY = #{OR_WAY}
+WHERE
+OR_NO = #{OR_NO} AND
+MEM_COM_NO = #{MEM_COM_NO}
+]]>
+	</update>
+
+	<update id="ordersStatus1" parameterType="hashmap">
+	<![CDATA[
+	UPDATE ORDER_DETAIL
+	SET
+	OR_STATUS = 5
+	WHERE
+	ORDER_DETAIL_NO = #{ORDER_DETAIL_NO}
+	]]>
+	</update>
+
+	<update id="ordersStatus7" parameterType="hashmap">
+	<![CDATA[
+	UPDATE ORDER_DETAIL
+	SET
+	OR_STATUS = 7
+	WHERE
+	ORDER_DETAIL_NO = #{ORDER_DETAIL_NO}
+	]]>
+	</update>
+
+	<update id="ordersStatus8" parameterType="hashmap">
+	<![CDATA[
+	UPDATE ORDER_DETAIL
+	SET
+	OR_STATUS = 8
+	WHERE
+	ORDER_DETAIL_NO = #{ORDER_DETAIL_NO}
+	]]>
+	</update>
+
+	<update id="ordersStatus9" parameterType="hashmap">
+	<![CDATA[
+	UPDATE ORDER_DETAIL
+	SET
+	OR_STATUS = 9
+	WHERE
+	ORDER_DETAIL_NO = #{ORDER_DETAIL_NO}
+	]]>
+	</update>
+
+	<select id="MonthTotal" parameterType="hashmap"
+		resultType="hashmap">
+	<![CDATA[
+	select to_char(or_date,'YYYY/MM') as YM ,c.MEM_COM_NO, c.MEM_COM_NAME, sum(multiple) as calculation from(
+		select b.OR_DATE,a.MEM_COM_NO, a.MEM_COM_NAME, a.multiple from (
+		SELECT ord.or_no,ord.MEM_COM_NO, com.MEM_COM_NAME, sum(ord.DEAL_PRICE * ord.B_COUNT) as multiple
+		FROM ORDER_DETAIL ord RIGHT OUTER JOIN MEMBER_COMPANY com on ord.MEM_COM_NO = com.MEM_COM_NO 
+		group by ord.MEM_COM_NO, com.MEM_COM_NAME,ord.or_no) a left outer join ORDERS b
+		on a.or_no = b.or_no) c  WHERE to_char(or_date,'YYYY/MM')= #{Month_Date}  and c.MEM_COM_NO = #{MEM_COM_NO} group by to_char(or_date,'YYYY/MM'), c.MEM_COM_NO, c.MEM_COM_NAME
+	]]>
+	</select>
+
+
+
+	<select id="DayTotal" parameterType="hashmap"
+		resultType="hashmap">
+	<![CDATA[
+	select to_char(or_date,'mm/dd') AS OR_DATE, c.MEM_COM_NAME, sum(multiple) as calculation from(
+select b.OR_DATE,a.MEM_COM_NO, a.MEM_COM_NAME, a.multiple from (
+SELECT ord.or_no,ord.MEM_COM_NO, com.MEM_COM_NAME, sum(ord.DEAL_PRICE * ord.B_COUNT) as multiple
+FROM ORDER_DETAIL ord
+RIGHT OUTER JOIN MEMBER_COMPANY com
+on ord.MEM_COM_NO = com.MEM_COM_NO 
+group by ord.MEM_COM_NO, com.MEM_COM_NAME,ord.or_no) a left outer join ORDERS b
+on a.or_no = b.or_no) c WHERE c.MEM_COM_NO = #{MEM_COM_NO} group by to_char(or_date,'mm/dd'), c.MEM_COM_NAME
+	]]>
+	</select>
+
+
+</mapper>

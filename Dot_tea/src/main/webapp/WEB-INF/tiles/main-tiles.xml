@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.1//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_1.dtd">
+
+<tiles-definitions>
+
+
+	<!-- 서브메뉴 있음 -->
+	<definition name="mainFooter" template="/WEB-INF/views/admin/main/main.jsp">
+		<put-attribute name="title" 	value="Remedium Hotel[당신만을 위한 오리엔탈 프리미엄 에디션]" />
+		<put-attribute name="header1" 	value="/WEB-INF/views/admin/main/header1.jsp" />
+		<put-attribute name="header2" 	value="/WEB-INF/views/admin/main/header2.jsp" />
+		<put-attribute name="body" 		value="/WEB-INF/views/admin/main/body.jsp" />		
+		<put-attribute name="footer" 	value="/WEB-INF/views/admin/main/footer.jsp" />			
+	</definition>
+ 	
+ 	<definition name="main" template="/WEB-INF/views/admin/main/main2.jsp">
+		<put-attribute name="title" 	value="Remedium Hotel[당신만을 위한 오리엔탈 프리미엄 에디션]" />
+		<put-attribute name="header1" 	value="/WEB-INF/views/admin/main/header1.jsp" />
+		<put-attribute name="header2" 	value="/WEB-INF/views/admin/main/header2.jsp" />
+		<put-attribute name="body" 		value="/WEB-INF/views/admin/main/body.jsp" />		
+		<put-attribute name="footer" 	value="/WEB-INF/views/admin/main/footer.jsp" />			
+	</definition>
+ 	
+ 	
+ 
+ 
+	<definition name="Info" extends="mainFooter">
+		<put-attribute name="body" value="/WEB-INF/views/admin/main/info.jsp" />
+	</definition>
+	
+	<definition name="Way" extends="mainFooter">
+		<put-attribute name="body" value="/WEB-INF/views/admin/main/way.jsp" />
+	</definition>
+	
+	
+	<!-- 예시에요 -->
+<!-- 	
+	<definition name="test" extends="main_main2">
+		<put-attribute name="body" value="/WEB-INF/test.jsp" />
+	</definition>
+ -->
+
+	
+	
+	
+</tiles-definitions>
+	
+	

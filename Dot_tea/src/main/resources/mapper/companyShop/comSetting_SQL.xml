@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="comSetting">
+
+	<select id="comSettingView" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT * FROM
+				MEMBER_COMPANY
+			WHERE
+				MEM_COM_NO = #{MEM_COM_NO} AND MEM_COM_OUT = 'N'
+		]]>
+	</select>
+
+	<update id="comSettingUpdate" parameterType="hashmap">
+		<![CDATA[
+			UPDATE MEMBER_COMPANY
+			SET
+			MEM_COM_PASSWORD = #{MEM_COM_PASSWORD},
+			MEM_COM_OWNER = #{MEM_COM_OWNER},
+			MEM_COM_NAME = #{MEM_COM_NAME},
+			MEM_COM_FAX = #{MEM_COM_FAX},
+			MEM_COM_MANAGER_PHONE = #{MEM_COM_MANAGER_PHONE},
+			MEM_COM_COMPANY_PHONE = #{MEM_COM_COMPANY_PHONE},
+			MEM_COM_MANAGER_EMAIL = #{MEM_COM_MANAGER_EMAIL},
+			MEM_COM_COMPANY_EMAIL = #{MEM_COM_COMPANY_EMAIL},
+			MEM_COM_ZIPCODE = #{MEM_COM_ZIPCODE},
+			MEM_COM_ZIBUNADDR = #{MEM_COM_ZIBUNADDR},
+			MEM_COM_LOADADDR = #{MEM_COM_LOADADDR},
+			MEM_COM_DETAILADDR = #{MEM_COM_DETAILADDR},
+			MEM_COM_DELIVERYFREE = #{MEM_COM_DELIVERYFREE},
+			MEM_COM_ACCOUNT = #{MEM_COM_ACCOUNT}
+			WHERE
+				MEM_COM_NO = #{MEM_COM_NO}
+				
+		]]>
+	</update>
+
+	<update id="comSettingDelete" parameterType="hashmap">
+	<![CDATA[
+	UPDATE MEMBER_COMPANY
+	SET
+	MEM_COM_OUT = 'Y'
+	WHERE
+	MEM_COM_NO = #{MEM_COM_NO}
+	]]>
+	</update>
+
+</mapper>

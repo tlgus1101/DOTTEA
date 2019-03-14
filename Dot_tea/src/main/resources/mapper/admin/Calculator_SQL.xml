@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="calc">
+
+	<select id="calculationList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		select to_char(or_date,'YYYYMM') as YM ,c.MEM_COM_NO, c.MEM_COM_NAME, sum(multiple) as calculation from(
+		select b.OR_DATE,a.MEM_COM_NO, a.MEM_COM_NAME, a.multiple from (
+		SELECT ord.or_no,ord.MEM_COM_NO, com.MEM_COM_NAME, sum(ord.DEAL_PRICE * ord.B_COUNT) as multiple
+		FROM ORDER_DETAIL ord RIGHT OUTER JOIN MEMBER_COMPANY com on ord.MEM_COM_NO = com.MEM_COM_NO 
+		group by ord.MEM_COM_NO, com.MEM_COM_NAME,ord.or_no) a left outer join ORDERS b
+		on a.or_no = b.or_no) c  WHERE to_char(or_date,'YYYYMM')= #{date} ${type} ${searchKeyWord} group by to_char(or_date,'YYYYMM'), c.MEM_COM_NO, c.MEM_COM_NAME
+		
+		]]>
+	</select>
+
+	<select id="calculationBlackList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		select to_char(or_date,'YYYYMM') as YM ,c.MEM_COM_NO, c.MEM_COM_NAME, sum(multiple) as calculation from(
+		select b.OR_DATE,a.MEM_COM_NO, a.MEM_COM_NAME, a.multiple from (
+		SELECT ord.or_no,ord.MEM_COM_NO, com.MEM_COM_NAME, sum(ord.DEAL_PRICE * ord.B_COUNT) as multiple
+		FROM ORDER_DETAIL ord RIGHT OUTER JOIN COM_BLACKLIST com on ord.MEM_COM_NO = com.MEM_COM_NO 
+		group by ord.MEM_COM_NO, com.MEM_COM_NAME,ord.or_no) a left outer join ORDERS b
+		on a.or_no = b.or_no) c  WHERE to_char(or_date,'YYYYMM')= #{date} ${type} ${searchKeyWord} group by to_char(or_date,'YYYYMM'), c.MEM_COM_NO, c.MEM_COM_NAME
+		
+		]]>
+	</select>
+
+</mapper>

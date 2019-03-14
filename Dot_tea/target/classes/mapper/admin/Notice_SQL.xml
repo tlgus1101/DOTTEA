@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="notice">
+<!-- 
+	<select id="noticeList" parameterType="hashmap"
+		resultType="hashmap">
+<![CDATA[
+select n_no, n_subject, n_content,  n_readhit, n_date 
+from 
+notice
+ ORDER BY n_no DESC 
+]]> 
+	</select> -->
+
+
+	<insert id="noticeWrite" parameterType="hashmap"
+		useGeneratedKeys="true" keyProperty="N_NO">
+		<selectKey keyProperty="N_NO" resultType="string"
+			order="BEFORE">
+			SELECT SEQ_TEA_N_NO.NEXTVAL FROM DUAL
+		</selectKey>
+
+<![CDATA[
+
+insert into notice (n_no, n_subject, n_content, n_readhit, n_date)
+values(#{N_NO}, #{N_SUBJECT},#{N_CONTENT},0,SYSDATE)
+]]>
+	</insert>
+	
+	
+	<update id="updateReadhit" parameterType="hashmap">
+	<![CDATA[
+	UPDATE NOTICE
+	SET
+	N_READHIT = NVL(N_READHIT, 0) +1
+	WHERE
+	N_NO = #{N_NO}
+	
+	]]>
+	</update>
+
+	<select id="noticeView" parameterType="hashmap"
+		resultType="hashmap">
+	<![CDATA[
+	SELECT * FROM NOTICE WHERE N_NO = #{N_NO}
+	
+	]]>
+	</select>
+
+	<update id="noticeUpdate" parameterType="hashmap">
+	<![CDATA[
+		UPDATE NOTICE
+		SET
+		N_SUBJECT = #{N_SUBJECT},
+		N_CONTENT = #{N_CONTENT}
+		WHERE
+	N_NO = #{N_NO}
+	]]>
+	</update>
+
+	<delete id="noticeDelete" parameterType="hashmap">
+    <![CDATA[
+        DELETE NOTICE
+        WHERE
+            N_NO = #{N_NO}
+    ]]>
+	</delete>
+
+	<update id="noticeFileUpdate" parameterType="hashmap">
+	<![CDATA[
+		UPDATE NOTICE
+		SET
+		N_FILEOR = #{N_FILEOR},
+		N_FILESV = #{N_FILESV}
+		WHERE
+	N_NO = #{N_NO}
+	]]>
+	</update>
+	
+	
+	<select id="noticeList" parameterType="hashmap" resultType="hashmap">
+	<include refid="common.pagingPre"/>
+	<![CDATA[
+	SELECT
+	ROW_NUMBER() OVER (ORDER BY N_NO DESC) RNUM,
+	N_NO,
+	N_SUBJECT,
+	N_READHIT,
+	TO_CHAR(N_DATE, 'YYYY.MM.DD') AS N_DATE
+	FROM
+	NOTICE
+	WHERE ${searchType} LIKE #{keyword}
+	]]>
+	<include refid="common.pagingPost"/>
+	</select>
+	
+
+</mapper>
+
+

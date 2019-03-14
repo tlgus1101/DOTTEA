@@ -1,0 +1,614 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="UserShop">
+
+	<select id="orderSearchList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+		<![CDATA[
+			SELECT
+				ROW_NUMBER() OVER (ORDER BY OR_NO DESC) RNUM,
+				OR_NO,
+				OR_NAME,
+				TO_CHAR(OR_DATE, 'YYYY.MM.DD') AS OR_DATE,
+				OR_PRICE,
+				OR_STATUS
+			FROM
+			    ORDERS
+			WHERE
+				OR_DATE >= #{first} AND OR_DATE <= #{end} AND MEM_USER_NO = #{MEM_USER_NO}
+		]]>
+		<include refid="common.pagingPost" />
+	</select>
+
+	<select id="orderBoardList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+		<![CDATA[
+			SELECT
+				ROW_NUMBER() OVER (ORDER BY OR_NO DESC) RNUM,
+				OR_NO,
+				OR_NAME,
+				TO_CHAR(OR_DATE, 'YYYY.MM.DD') AS OR_DATE,
+				OR_PRICE,
+				OR_STATUS
+			FROM
+			    ORDERS
+			WHERE
+				MEM_USER_NO = #{MEM_USER_NO}
+		]]>
+		<include refid="common.pagingPost" />
+	</select>
+
+	<select id="MyOrderList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT*FROM
+			(SELECT
+				OR_NO,
+				OR_NAME,
+				TO_CHAR(OR_DATE, 'YYYY.MM.DD') AS OR_DATE,
+				OR_PRICE,
+				OR_STATUS
+			FROM
+			    ORDERS) 
+			WHERE 
+				ROWNUM <= 5
+		]]>
+	</select>
+
+	<select id="qnaBoardList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+		<![CDATA[
+			select
+				ROW_NUMBER() OVER (ORDER BY QA_NO DESC) RNUM,
+				QA_NO,
+				b.DEAL_NO,
+				DEAL_TITLE,
+				QA_SUBJECT,
+				TO_CHAR(QA_DATE, 'YYYY.MM.DD') AS QA_DATE,
+				QA_COM_TYPE
+			from DOTTEA_QNA a join deal b on a.deal_no = b.deal_no
+			WHERE a.QA_GB = 'N'
+			AND a.MEM_USER_USERID = #{idSession}
+		]]>
+		<include refid="common.pagingPost" />
+	</select>
+
+	<select id="qnaSearchList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+		<![CDATA[
+			SELECT
+				ROW_NUMBER() OVER (ORDER BY QA_DATE DESC) RNUM,
+				QA_NO,
+				b.DEAL_NO,
+				DEAL_TITLE,
+				QA_SUBJECT,
+				TO_CHAR(QA_DATE, 'YYYY.MM.DD') AS QA_DATE,
+				QA_COM_TYPE
+			FROM DOTTEA_QNA a join deal b on a.deal_no = b.deal_no
+			WHERE a.QA_GB = 'N' AND a.MEM_USER_USERID = #{idSession}
+			and DEAL_TITLE like #{inputKeyword}
+			    
+		]]>
+		<include refid="common.pagingPost" />
+	</select>
+
+	<select id="MyQnaList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT
+				QA_NO,
+				DEAL_TITLE,
+				QA_SUBJECT,
+				TO_CHAR(QA_DATE, 'YYYY.MM.DD') AS QA_DATE,
+				QA_COM_TYPE
+			FROM
+			    DOTTEA_QNA, DEAL
+			WHERE ROWNUM <= 5 AND
+			DOTTEA_QNA.DEAL_NO = DEAL.DEAL_NO
+			AND QA_GB = 'N' AND MEM_USER_USERID = #{MEM_USER_USERID}
+			ORDER BY QA_REF DESC, QA_TYPE ASC
+		]]>
+	</select>
+
+	<select id="minireviewList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT
+				RE_NO,
+				MEM_USER_USERID,
+				DEAL_TITLE,
+				RE_SUBJECT,
+				TO_CHAR(RE_DATE, 'YYYY.MM.DD') AS RE_DATE,
+				RE_STAR
+			FROM
+			    REVIEW, DEAL
+			WHERE
+				ROWNUM <= 5 AND
+				REVIEW.DEAL_NO = DEAL.DEAL_NO AND
+				RE_GB = 'N' AND MEM_USER_USERID = #{MEM_USER_USERID} 
+				ORDER BY RE_NO DESC
+		]]>
+	</select>
+
+	<select id="reviewBoardList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+      <![CDATA[
+         select  ROW_NUMBER() OVER (ORDER BY RE_NO DESC) RNUM,
+               RE_NO,
+               b.DEAL_NO,
+                 DEAL_TITLE,
+               RE_SUBJECT,
+               TO_CHAR(RE_DATE, 'YYYY.MM.DD') AS RE_DATE,
+               RE_STAR
+         from REVIEW a join deal b on a.deal_no = b.deal_no
+         WHERE a.RE_GB = 'N' and a.MEM_USER_USERID = #{idSession}
+      ]]>
+		<include refid="common.pagingPost" />
+	</select>
+
+	<select id="reviewSearchList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+		<![CDATA[
+			SELECT  ROW_NUMBER() OVER (ORDER BY RE_DATE DESC) RNUM,
+				RE_NO,
+				b.DEAL_NO,
+       	 		b.DEAL_TITLE,
+				RE_SUBJECT,
+				TO_CHAR(RE_DATE, 'YYYY.MM.DD') AS RE_DATE,
+				RE_STAR
+			FROM REVIEW a join deal b on a.deal_no = b.deal_no
+			WHERE RE_GB = 'N' AND a.MEM_USER_USERID = #{idSession}
+      		AND DEAL_TITLE like #{inputKeyword}
+		]]>
+		<include refid="common.pagingPost" />
+	</select>
+
+	<insert id="insertBoard" parameterType="hashmap"
+		useGeneratedKeys="true" keyProperty="IDX">
+		<selectKey keyProperty="IDX" resultType="string"
+			order="BEFORE">
+			SELECT SEQ_TB_BOARD_IDX.NEXTVAL FROM DUAL
+		</selectKey>
+		<![CDATA[
+			INSERT INTO TB_BOARD
+			(
+				IDX,
+			    TITLE, 
+			    CONTENTS, 
+			    HIT_CNT, 
+			    DEL_GB, 
+			    CREA_DTM, 
+			    CREA_ID
+			)
+			VALUES
+			(
+				#{IDX},
+			    #{TITLE}, 
+			    #{CONTENTS}, 
+			    0, 
+			    'N', 
+			    SYSDATE, 
+			    'Admin'
+			)
+		]]>
+	</insert>
+
+	<insert id="basket" parameterType="hashmap">
+   <![CDATA[
+   INSERT INTO BASKET
+   ( 
+      B_NO, 
+      DEAL_NO, 
+      MEM_USER_NO, 
+      B_DATE, 
+      B_COUNT 
+   )
+   VALUES
+   (
+      SEQ_TEA_B_NO.NEXTVAL, 
+      #{DEAL_NO}, 
+      #{MEM_USER_NO}, 
+      SYSDATE, 
+      #{B_COUNT}
+   )
+   ]]>
+	</insert>
+
+
+	<update id="updateHitCnt" parameterType="hashmap">
+		<![CDATA[
+			UPDATE TB_BOARD 
+			SET
+				HIT_CNT = NVL(HIT_CNT, 0) + 1
+			WHERE
+				IDX = #{IDX}	
+		]]>
+	</update>
+
+	<select id="MyInfo" parameterType="hashmap" resultType="hashmap">
+		<![CDATA[
+			SELECT*FROM
+				MEMBER_USER
+			WHERE
+				MEM_USER_NO = #{MEM_USER_NO}	
+		]]>
+	</select>
+
+	<update id="updateInfo" parameterType="hashmap">
+		<![CDATA[
+			UPDATE MEMBER_USER 
+			SET
+				MEM_USER_USERNAME = #{MEM_USER_USERNAME},
+				MEM_USER_PASSWORD = #{MEM_USER_PASSWORD},
+				MEM_USER_PHONE = #{MEM_USER_PHONE},
+				MEM_USER_USEREMAIL = #{MEM_USER_USEREMAIL},
+				MEM_USER_ZIPCODE = #{MEM_USER_ZIPCODE},
+				MEM_USER_ZIBUNADDR = #{MEM_USER_ZIBUNADDR},
+				MEM_USER_LOADADDR = #{MEM_USER_LOADADDR},
+				MEM_USER_DETAILADDR = #{MEM_USER_DETAILADDR},
+				MEM_USER_BIRTH = #{MEM_USER_BIRTH}
+			WHERE
+				MEM_USER_NO = #{MEM_USER_NO}	
+		]]>
+	</update>
+
+	<update id="deleteInfo" parameterType="hashmap">
+		<![CDATA[
+			UPDATE MEMBER_USER
+			SET
+				MEM_USER_OUT = 'Y'
+			WHERE
+				MEM_USER_NO = #{MEM_USER_NO}
+		]]>
+	</update>
+
+	<select id="qnaBoardDetail" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT
+				QA_NO,
+				DEAL_NO,
+				MEM_USER_USERID,
+				QA_DATE,
+				QA_SUBJECT,
+				QA_CONTENT
+			FROM
+				DOTTEA_QNA
+			WHERE
+				QA_NO = #{QA_NO} 		
+		]]>
+	</select>
+
+	<select id="reviewBoardDetail" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT
+				RE_NO,
+				DEAL_NO,
+				MEM_USER_USERID,
+				RE_STAR,
+				RE_DATE,
+				RE_SUBJECT,
+				RE_IMGSV,
+				RE_CONTENT
+			FROM
+				REVIEW
+			WHERE
+				RE_NO = #{RE_NO}		
+		]]>
+	</select>
+
+	<select id="orderBoardDetail" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT
+				OR_NO,
+				MEM_USER_NO,
+				OR_NAME,
+				OR_PHON,
+				OR_AD,
+				OR_ADN,
+				OR_PAYN,
+				OR_PAY,
+				OR_PRICE,
+				OR_STATUS,
+				OR_DATE
+			FROM
+				ORDERS 
+			WHERE OR_NO = #{OR_NO}			
+						
+		]]>
+	</select>
+
+	<select id="orderDetailBuyList" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT
+				a.ORDER_DETAIL_NO,a.OR_NO,a.MEM_COM_NO,a.B_COUNT,a.OR_STATUS,a.DEAL_NO,b.DEAL_TITLE, b.DEAL_PRICE, b.DEAL_IMGSV
+			FROM
+				ORDER_DETAIL a join DEAL b on a.DEAL_NO = b.DEAL_NO
+			WHERE OR_NO = #{OR_NO}			
+						
+		]]>
+	</select>
+
+
+
+	<update id="updateBoard" parameterType="hashmap">
+		<![CDATA[
+			UPDATE TB_BOARD 
+			SET
+				TITLE = #{TITLE},
+				CONTENTS = #{CONTENTS}
+			WHERE
+				IDX = #{IDX}	
+		]]>
+	</update>
+
+	<update id="qnaUpdate" parameterType="hashmap">
+		<![CDATA[
+			UPDATE DOTTEA_QNA 
+			SET
+				QA_SUBJECT = #{QA_SUBJECT},
+				QA_CONTENT = #{QA_CONTENT}
+			WHERE
+				QA_NO = #{QA_NO}	
+		]]>
+	</update>
+
+	<update id="reviewUpdate" parameterType="hashmap">
+		<![CDATA[
+			UPDATE REVIEW 
+			SET
+				RE_SUBJECT = #{RE_SUBJECT},
+				RE_CONTENT = #{RE_CONTENT}
+			WHERE
+				RE_NO = #{RE_NO}	
+		]]>
+	</update>
+
+	<update id="infoUpdate" parameterType="hashmap">
+		<![CDATA[
+			UPDATE MEMBER_USER 
+			SET
+				MEM_USER_USERNAME = #{MEM_USER_USERNAME},
+				MEM_USER_PHONE = #{MEM_USER_PHONE},
+				MEM_USER_USERMAIL = #{MEM_USER_USERMAIL},
+				MEM_USER_ZIPCODE = #{MEM_USER_ZIPCODE},
+				MEM_USER_ZIBUNADDR = #{MEM_USER_ZIBUNADDR},
+				MEM_USER_LOADADDR = #{MEM_USER_LOADADDR},
+				MEM_USER_DETAILADDR = #{MEM_USER_DETAILADDR}
+			WHERE
+				MEM_USER_NO = #{Id}	
+		]]>
+	</update>
+
+	<update id="deleteBoard" parameterType="hashmap">
+		<![CDATA[
+			UPDATE TB_BOARD
+			SET
+				DEL_GB = 'Y'
+			WHERE
+				IDX = #{IDX}
+		]]>
+	</update>
+
+	<update id="qnaDelete" parameterType="hashmap">
+		<![CDATA[
+			UPDATE DOTTEA_QNA
+			SET
+				QA_GB = 'Y'
+			WHERE
+				QA_NO = #{QA_NO}
+		]]>
+	</update>
+
+	<update id="reviewDelete" parameterType="hashmap">
+		<![CDATA[
+			UPDATE REVIEW
+			SET
+				RE_GB = 'Y'
+			WHERE
+				RE_NO = #{RE_NO}
+		]]>
+	</update>
+
+	<update id="infoDelete" parameterType="hashmap">
+		<![CDATA[
+			UPDATE MEMBER_USER
+			SET
+				MEM_USER_OUT = 'Y'
+			WHERE
+				MEM_USER_NO = #{MEM_USER_NO}
+		]]>
+	</update>
+
+	<insert id="insertFile" parameterType="hashmap">
+	    <![CDATA[
+	    	INSERT INTO TB_FILE
+	    	(
+	    		IDX,
+	    		BOARD_IDX,
+	    		ORIGINAL_FILE_NAME,
+	    		STORED_FILE_NAME,
+	    		FILE_SIZE,
+	    		CREA_ID
+	    	)
+	    	VALUES
+	    	(
+	    		SEQ_TB_FILE_IDX.NEXTVAL,
+	    		#{BOARD_IDX},
+	    		#{ORIGINAL_FILE_NAME},
+	    		#{STORED_FILE_NAME},
+	    		#{FILE_SIZE},
+	    		'Admin'
+	    	)
+	    ]]>
+	</insert>
+
+	<select id="selectFileList" parameterType="hashmap"
+		resultType="hashmap">
+	    <![CDATA[
+	    	SELECT
+	    		IDX,
+	    		ORIGINAL_FILE_NAME,
+	    		ROUND(FILE_SIZE/1024, 1) AS FILE_SIZE
+	    	FROM
+	    		TB_FILE
+	    	WHERE
+	    		BOARD_IDX = #{IDX}
+	    		AND DEL_GB = 'N'
+	    ]]>
+	</select>
+
+	<update id="deleteFileList" parameterType="hashmap">
+    <![CDATA[
+        UPDATE TB_FILE SET
+            DEL_GB = 'Y'
+        WHERE
+            BOARD_IDX = #{IDX} 
+    ]]>
+	</update>
+
+	<update id="updateFile" parameterType="hashmap">
+    <![CDATA[
+        UPDATE TB_FILE SET
+            DEL_GB = 'N'
+        WHERE
+            IDX = #{FILE_IDX}  
+    ]]>
+	</update>
+
+	<select id="checkPassword" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+		SELECT * FROM 
+        	MEMBER_USER 
+        WHERE
+        	MEM_USER_NO = #{MEM_USER_NO}  
+            AND MEM_USER_PASSWORD = #{password}	
+		]]>
+	</select>
+
+	<select id="basketList" parameterType="hashmap"
+		resultType="hashmap">
+      <![CDATA[
+         SELECT
+            b.B_NO,
+            b.DEAL_NO,
+            b.B_COUNT,
+            TO_CHAR(b.B_DATE, 'YYYY.MM.DD') AS B_DATE, a.DEAL_COUNT,
+            a.DEAL_IMGSV,a.DEAL_TITLE,a.DEAL_PRICE,a.MEM_COM_ID,c.MEM_COM_NAME,c.MEM_COM_DELIVERYFREE
+          FROM DEAL a join BASKET b on a.DEAL_NO = b.DEAL_NO join MEMBER_COMPANY c  on a.MEM_COM_ID = c.MEM_COM_ID
+         WHERE
+            MEM_USER_NO = #{MEM_USER_NO} ORDER BY MEM_COM_NO
+      ]]>
+	</select>
+
+
+	<select id="SessionbasketDeal" parameterType="hashmap"
+		resultType="hashmap">
+      <![CDATA[
+         SELECT a.DEAL_NO, a.MEM_COM_ID, a.DEAL_TITLE, a.DEAL_COUNT,
+				a.DEAL_TYPE, a.DEAL_PRICE, a.DEAL_IMGOG,
+				a.DEAL_IMGSV, a.DEAL_CONTENT, a.DEAL_VOL,
+				a.DEAL_UNIT, a.DEAL_COUNT, a.DEAL_ORG,
+				a.DEAL_FAV, a.DEAL_GB, a.DEAL_DATE,b.MEM_COM_NO,b.MEM_COM_NAME,b.MEM_COM_DELIVERYFREE
+			FROM DEAL a join MEMBER_COMPANY b on a.MEM_COM_ID = b.MEM_COM_ID  
+			WHERE DEAL_GB = 'N' AND DEAL_NO = #{DEAL_NO} 
+      ]]>
+	</select>
+
+
+
+
+	<delete id="TeaBasketListDelete" parameterType="hashmap">
+	 <![CDATA[ delete from BASKET where B_NO = #{B_NO}  ]]>
+	</delete>
+
+
+	<insert id="InsertOrders" parameterType="hashmap">
+	
+   <![CDATA[
+	INSERT INTO ORDERS (OR_NO,OR_NAME,OR_AD,OR_ADN,OR_DATE,
+	OR_PRICE,OR_STATUS,MEM_USER_NO,OR_PHON,OR_PAY)
+ 	VALUES(SEQ_TEA_OR_NO.NEXTVAL,#{MEM_USER_USERNAME},#{OR_AD},#{MEM_USER_ZIPCODE},sysdate
+ 	,#{rsp},4,#{MEM_USER_NO},#{MEM_USER_PHONE},'카드결제') 	
+   ]]>
+
+	</insert>
+	<insert id="InsertOrders2" parameterType="hashmap">
+		<selectKey keyProperty="ORDER_DETAIL_Idx"
+			resultType="Integer" order="BEFORE">
+			SELECT MAX(OR_NO) FROM ORDERS
+		</selectKey>
+   <![CDATA[
+	INSERT INTO ORDER_DETAIL (ORDER_DETAIL_NO,OR_NO,MEM_COM_NO,
+	MEM_USER_NO,DEAL_PRICE,DEAL_NO,B_COUNT)
+ 	VALUES(SEQ_TEA_ORDER_DETAIL_NO.NEXTVAL,#{ORDER_DETAIL_Idx},#{MEM_COM_NO},#{MEM_USER_NO},#{DEAL_PRICE},#{DEAL_NO},#{B_COUNT})
+   ]]>
+	</insert>
+
+	<select id="selectOrders" parameterType="hashmap"
+		resultType="hashmap">
+   <![CDATA[
+			SELECT  a.B_NO, a.DEAL_NO, a.MEM_USER_NO, a.B_COUNT, b.MEM_USER_USERNAME, 
+				b.MEM_USER_ZIBUNADDR, b.MEM_USER_DETAILADDR,b.MEM_USER_PHONE,
+				b.MEM_USER_ZIPCODE, c.MEM_COM_ID , c.DEAL_PRICE , d.MEM_COM_NO 
+				FROM BASKET a join MEMBER_USER b on a.MEM_USER_NO = b.MEM_USER_NO 
+				join DEAL c on a.DEAL_NO = c.DEAL_NO  
+ 				join MEMBER_COMPANY d on c.MEM_COM_ID = d.MEM_COM_ID 
+			 WHERE B_NO = #{B_NO}
+   ]]>
+	</select>
+
+	<update id="BCountPlusMinus" parameterType="hashmap">
+    <![CDATA[
+        UPDATE BASKET SET
+           B_COUNT = B_COUNT ${B_COUNTSETTING}
+        WHERE
+            B_NO = #{B_NO} 
+    ]]>
+	</update>
+
+
+
+	<update id="orderUpdate" parameterType="hashmap">
+		<![CDATA[
+			UPDATE ORDER_DETAIL					
+			SET
+				OR_STATUS = 1
+			WHERE
+				ORDER_DETAIL_NO = #{ORDER_DETAIL_NO}		
+		]]>
+	</update>
+
+	<update id="orderUpdate2" parameterType="hashmap">
+		<![CDATA[
+			UPDATE ORDER_DETAIL					
+			SET
+				OR_STATUS = 2
+			WHERE
+				ORDER_DETAIL_NO = #{ORDER_DETAIL_NO}	
+		]]>
+	</update>
+
+	<update id="orderUpdate3" parameterType="hashmap">
+		<![CDATA[
+			UPDATE ORDER_DETAIL					
+			SET
+				OR_STATUS = 3
+			WHERE
+				ORDER_DETAIL_NO = #{ORDER_DETAIL_NO}		
+		]]>
+	</update>
+
+
+</mapper>

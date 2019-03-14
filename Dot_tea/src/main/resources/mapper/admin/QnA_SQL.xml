@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="qa">
+
+	<select id="qnaList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre" />
+	<![CDATA[
+	SELECT
+	ROW_NUMBER() OVER (ORDER BY QA_NO DESC) RNUM,
+	QA_NO,
+	QA_SUBJECT,
+	MEM_USER_USERID,
+	DEAL_NO,
+	QA_TYPE,
+	QA_REF,
+	QA_STEP,
+	QA_LEVEL,
+	TO_CHAR(QA_DATE, 'YYYY.MM.DD') AS QA_DATE
+	FROM
+	DOTTEA_QNA
+	WHERE ${searchType} LIKE #{keyword}
+	]]>
+		<include refid="common.pagingPost" />
+	</select>
+
+
+	<select id="qnaView" parameterType="hashmap"
+		resultType="hashmap">
+	<![CDATA[
+	SELECT * FROM DOTTEA_QNA WHERE QA_NO = #{QA_NO}
+	]]>
+	</select>
+
+</mapper>
+
+

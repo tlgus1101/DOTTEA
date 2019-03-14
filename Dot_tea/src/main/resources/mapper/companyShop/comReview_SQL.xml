@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="review">
+
+	<select id="reviewBoardList" parameterType="hashmap"
+		resultType="hashmap">
+			<include refid="common.pagingPre"/>
+		<![CDATA[
+	SELECT 
+	ROW_NUMBER() OVER (ORDER BY RE_NO DESC) RNUM,
+	RE_NO,
+	RE_SUBJECT,
+	MEM_USER_USERID,
+	RE_DATE,
+	RE_STAR
+	 FROM
+			    REVIEW, DEAL
+			    WHERE
+			   REVIEW.DEAL_NO = DEAL.DEAL_NO AND
+				REVIEW.DEAL_NO = #{DEAL_NO} AND
+			    RE_GB = 'N'
+		]]>
+		<include refid="common.pagingPost"/> 
+	</select>
+
+	<select id="reviewCompany" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre"/>
+		<![CDATA[
+
+SELECT 
+ROW_NUMBER() OVER (ORDER BY RE_NO DESC) RNUM,
+RE_NO, MEM_COM_ID, DEAL_TITLE, RE_SUBJECT, MEM_USER_USERID, RE_STAR 
+FROM REVIEW, DEAL 
+WHERE REVIEW.DEAL_NO = DEAL.DEAL_NO AND RE_GB = 'N' AND MEM_COM_ID = #{MEM_COM_ID} 
+		]]>
+		<include refid="common.pagingPost"/> 
+	</select>
+
+	<insert id="insertReview" parameterType="hashmap">
+	<![CDATA[
+INSERT INTO REVIEW ( RE_NO, MEM_USER_USERID, RE_SUBJECT, RE_DATE, RE_STAR, DEAL_NO, RE_GB)
+ VALUES ( SEQ_TEA_RE_NO.NEXTVAL, #{MEM_USER_USERID}, #{RE_SUBJECT}, SYSDATE, #{RE_STAR}, #{DEAL_NO}, 'N')
+ ]]>
+	</insert>
+	
+		<insert id="police" parameterType="hashmap">
+	<![CDATA[
+INSERT INTO POLICE_USER ( P_USER_NO, RE_NO, MEM_USER_NO, P_USER_SUBJECT, P_USER_CONTENT, P_USER_STATUS, P_USER_GB, P_USER_DATE, P_REPORTER_ID)
+ VALUES ( SEQ_TEA_P_USER_NO.NEXTVAL, #{RE_NO}, #{MEM_USER_NO}, #{P_USER_SUBJECT}, #{P_USER_CONTENT}, 1, 'N', SYSDATE, #{P_REPORTER_ID})
+ ]]>
+	</insert>
+	
+	<select id="reviewDetail" parameterType="hashmap" resultType="hashmap">
+	<![CDATA[
+	SELECT * FROM
+REVIEW, MEMBER_USER
+WHERE
+REVIEW.MEM_USER_USERID = MEMBER_USER.MEM_USER_USERID
+AND RE_NO = #{RE_NO}
+	]]>
+	
+	</select>
+
+</mapper> 

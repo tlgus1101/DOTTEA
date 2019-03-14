@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="comQnA">
+
+	<select id="comQnAList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre"/> 
+		<![CDATA[
+	SELECT 
+	ROW_NUMBER() OVER (ORDER BY QA_REF DESC, QA_TYPE ASC) RNUM,
+	QA_NO, 
+	QA_SUBJECT, 
+	MEM_USER_USERID, 
+	QA_COUNT, 
+	QA_COM_TYPE, 
+	QA_LEVEL,
+	 QA_DATE
+	 FROM
+			    DOTTEA_QNA, DEAL
+			    WHERE
+			   DOTTEA_QNA.DEAL_NO = DEAL.DEAL_NO AND
+				DOTTEA_QNA.DEAL_NO = #{DEAL_NO} AND
+			    QA_GB = 'N'
+		]]>
+		<include refid="common.pagingPost"/> 
+	</select>
+
+	<select id="companyQnAList" parameterType="hashmap"
+		resultType="hashmap">
+		<include refid="common.pagingPre"/> 
+		<![CDATA[
+		SELECT 
+		ROW_NUMBER() OVER (ORDER BY QA_REF DESC, QA_TYPE ASC) RNUM,
+		QA_NO, 
+		QA_SUBJECT, 
+		MEM_COM_ID,
+		MEM_USER_USERID,
+		DEAL_TITLE,
+		QA_COUNT,  
+		QA_COM_TYPE,
+		QA_LEVEL,
+		QA_DATE
+		FROM DOTTEA_QNA, DEAL
+		WHERE DOTTEA_QNA.DEAL_NO = DEAL.DEAL_NO AND
+			QA_GB = 'N' AND MEM_COM_ID = #{MEM_COM_ID}	 
+		]]>
+		<include refid="common.pagingPost"/>
+	</select>
+
+
+	<select id="comQnADetail" parameterType="hashmap"
+		resultType="hashmap">
+		<![CDATA[
+			SELECT * FROM
+				DOTTEA_QNA
+			WHERE
+				QA_NO = #{QA_NO}
+		]]>
+	</select>
+
+	<insert parameterType="hashmap" id="QnAwrite">
+
+<![CDATA[ 
+INSERT INTO DOTTEA_QNA ( QA_NO, MEM_USER_USERID, QA_SUBJECT, QA_CONTENT, QA_PASSWORD, QA_COUNT, QA_DATE, QA_COM_TYPE, DEAL_NO, QA_TYPE, QA_GB, QA_REF, QA_STEP, QA_LEVEL)
+ VALUES ( SEQ_TEA_QA_NO.NEXTVAL, #{MEM_USER_USERID}, #{QA_SUBJECT}, #{QA_CONTENT}, #{QA_PASSWORD}, 0, SYSDATE, 1, #{DEAL_NO}, 1, 'N', SEQ_TEA_QA_NO.CURRVAL, 0, 0) 
+ ]]>
+	</insert>
+
+	<update id="QnAreplyUp" parameterType="hashmap">
+	<![CDATA[
+	UPDATE DOTTEA_QNA
+	SET 
+	QA_STEP = QA_STEP + 1
+	WHERE
+	QA_REF = #{QA_REF} AND QA_STEP > #{QA_STEP}
+	]]>
+	</update>
+
+	<update id="replyCheck" parameterType="hashmap">
+	<![CDATA[
+	UPDATE DOTTEA_QNA
+	SET 
+	QA_COM_TYPE = 2
+	WHERE
+	QA_REF = #{QA_REF}
+	]]>
+	</update>
+
+	<insert id="comQnAreply" parameterType="hashmap">
+	<![CDATA[
+	INSERT INTO DOTTEA_QNA
+	( QA_NO, MEM_USER_USERID, QA_SUBJECT, QA_CONTENT, QA_PASSWORD, QA_COUNT, QA_DATE, DEAL_NO, QA_GB, QA_REF, QA_STEP, QA_TYPE)
+	VALUES(SEQ_TEA_QA_NO.NEXTVAL, #{MEM_USER_USERID}, #{QA_SUBJECT}, #{QA_CONTENT}, #{QA_PASSWORD}, 0, SYSDATE, #{DEAL_NO}, 'N', #{QA_REF}, #{QA_STEP}, 2)
+	]]>
+	</insert>
+	
+		<update id="QnAupdate" parameterType="hashmap">
+		<![CDATA[
+			UPDATE DOTTEA_QNA
+			SET
+			QA_SUBJECT = #{QA_SUBJECT},
+			QA_CONTENT = #{QA_CONTENT},
+			QA_PASSWORD = #{QA_PASSWORD}
+			WHERE
+				QA_NO = #{QA_NO}
+		]]>
+	</update>
+	
+		<update id="QnAdelete" parameterType="hashmap">
+		<![CDATA[
+			UPDATE DOTTEA_QNA
+			SET
+			QA_GB = 'Y'
+			WHERE
+				QA_NO = #{QA_NO}
+		]]>
+	</update>
+	
+			<update id="QnAupdatereply" parameterType="hashmap">
+		<![CDATA[
+			UPDATE DOTTEA_QNA
+			SET
+			QA_SUBJECT = #{QA_SUBJECT},
+			QA_CONTENT = #{QA_CONTENT}
+			WHERE
+				QA_NO = #{QA_NO}
+		]]>
+	</update>
+	
+
+	<!-- <select id="DEALNO" parameterType="hashmap" resultType="hashmap"> <![CDATA[ 
+		SELECT DEAL_NO FROM DEAL WHERE DEAL_NO = #{DEAL_NO} ]]> </select> -->
+</mapper>

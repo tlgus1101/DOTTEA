@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+
+<!-- 
+   <![CDATA[
+   
+   ]]> -->
+   
+   
+   <select id="user_select" parameterType="hashmap">
+      <![CDATA[
+      SELECT
+      MEM_USER_USERID,
+      MEM_USER_PASSWORD,
+      MEM_USER_USERNAME,
+      MEM_USER_PHONE,   
+      MEM_USER_USEREMAIL,
+      MEM_USER_ZIPCODE,
+      MEM_USER_ZIBUNADDR,
+      MEM_USER_LOADADDR,
+      MEM_USER_DETAILADDR,   
+      MEM_USER_BIRTH,
+      MEM_LIKE_DEAL, 
+      MEM_USER_JOIN_DATE
+      FROM
+      MEMBER_USER;
+      ]]>
+   </select>
+   
+   
+   <update id="user_update" parameterType="hashmap">
+      <![CDATA[
+      UPDATE MEMBER_USER
+      SET
+      MEM_USER_PASSWORD = #{MEM_USER_PASSWORD},
+      MEM_USER_USERNAME = #{MEM_USER_USERNAME},
+      MEM_USER_PHONE = #{MEM_USER_PHONE},
+      MEM_USER_USEREMAIL = #{MEM_USER_USEREMAIL},
+      MEM_USER_ZIPCODE = #{MEM_USER_ZIPCODE},
+      MEM_USER_ZIBUNADDR = #{MEM_USER_ZIBUNADDR},
+      MEM_USER_LOADADDR = #{MEM_USER_LOADADDR},
+      MEM_USER_DETAILADDR = #{MEM_USER_DETAILADDR},   
+      MEM_USER_BIRTH = #{MEM_USER_BIRTH},
+      MEM_LIKE_DEAL = #{MEM_LIKE_DEAL}
+      WHERE
+      MEM_USER_NO = #{MEM_USER_NO}
+      ]]>
+   </update>
+   
+   
+   <update id="user_delete" parameterType="hashmap">
+      <![CDATA[
+      UPDATE MEMBER_USER
+      SET
+      MEM_USER_OUT = 'Y'
+      WHERE
+      MEM_USER_NO = #{MEM_USER_NO}
+      ]]>
+   </update>
+   
+   <select id="checkUserId" parameterType="hashmap">
+      <![CDATA[
+      SELECT COUNT(*)
+      FROM MEMBER_USER
+      WHERE
+      MEM_USER_USERID = #{MEM_USER_USERID}
+      ]]>
+   </select>
+   
+   <update id="unlikeCk" parameterType="hashmap">
+      <![CDATA[
+      UPDATE MEMBER_USER
+      SET
+      MEM_LIKE_DEAL =  #{MEM_LIKE_DEAL}
+       WHERE
+      MEM_USER_NO = #{MEM_USER_NO}
+      ]]>
+   </update>
+
+   <select id="likeSelect" parameterType="hashmap" resultType="hashmap">
+      <![CDATA[
+      SELECT MEM_LIKE_DEAL
+      FROM MEMBER_USER
+      WHERE MEM_USER_NO = #{MEM_USER_NO}
+      ]]>
+   </select>
+
+
+   <update id="likeCk" parameterType="hashmap" >
+      <![CDATA[
+      UPDATE MEMBER_USER
+      SET
+      MEM_LIKE_DEAL =#{MEM_LIKE_DEAL}
+       WHERE
+      MEM_USER_NO = #{MEM_USER_NO}
+      ]]>
+   </update>
+   
+   
+</mapper>
